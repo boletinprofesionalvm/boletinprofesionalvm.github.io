@@ -136,7 +136,7 @@ body {
 }
 .book.is-ready { visibility: visible; }
 .book-page { overflow: hidden; background: #fffefa; }
-.book-page canvas { display: block; width: 100%; height: 100%; object-fit: contain; }
+.book-page canvas { display: block; width: 100%; height: 100%; object-fit: fill; }
 .book-loading { position: absolute; z-index: 1; display: grid; min-height: 120px; place-items: center; color: var(--red-deep); font-size: 13px; }
 .book-loading[hidden] { display: none; }
 .reader-controls { display: flex; align-items: center; justify-content: center; gap: 20px; min-height: 54px; }
@@ -172,10 +172,11 @@ body {
 
 @media (max-width: 760px) {
   .page-shell { width: min(100% - 36px, 1160px); }
-  .site-header { min-height: 68px; padding: 0 18px; }
-  .brand { gap: 8px; }
-  .brand-logo { height: 36px; }
-  .site-nav { gap: 15px; }
+  .site-header { min-height: 68px; flex-direction: column; gap: 8px; align-items: stretch; padding: 10px 18px; }
+  .brand { width: 100%; justify-content: center; gap: 8px; }
+  .brand-logo-link { flex: 1 1 0; justify-content: center; min-width: 0; }
+  .brand-logo { width: 100%; height: 36px; object-position: center; }
+  .site-nav { justify-content: space-evenly; gap: 15px; }
   .site-nav a { font-size: 10px; }
   .hero { min-height: 0; padding-top: 58px; padding-bottom: 58px; }
   .hero-index { width: 112px; height: 112px; margin-right: 10px; }
@@ -190,10 +191,9 @@ body {
 }
 @media (max-width: 520px) {
   .page-shell { width: calc(100% - 30px); }
-  .site-header { align-items: center; padding: 0 15px; }
-  .site-header { padding: 0 8px; }
+  .site-header { padding: 10px 8px; }
   .brand { gap: 4px; }
-  .brand-logo { height: 22px; }
+  .brand-logo { height: 30px; }
   .brand-logo-link { padding: 3px; }
   .site-nav { gap: 10px; }
   .site-nav a { font-size: 9px; }

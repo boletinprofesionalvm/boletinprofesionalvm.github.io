@@ -24,8 +24,10 @@
   let pageFlip;
   let pdfDocument;
   let renderedPages = new Map();
+  let failedPages = new Set();
   let currentEdition = "septiembre";
   let loadToken = 0;
+  const renderErrorMessage = "No se pudo procesar una página de esta edición. Puedes abrir el PDF original desde el enlace de descarga.";
 
   if (window.pdfjsLib) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -53,41 +55,53 @@
     bookElement.replaceChildren(fragment);
   }
 
-  async function renderPage(pageNumber, token) {
-    if (token !== loadToken || !pdfDocument || pageNumber < 1 || pageNumber > pdfDocument.numPages || renderedPages.has(pageNumber)) return;
+  function renderPage(pageNumber, token) {
+    if (token !== loadToken || !pdfDocument || pageNumber < 1 || pageNumber > pdfDocument.numPages) return Promise.resolve();
+    if (renderedPages.has(pageNumber)) return renderedPages.get(pageNumber);
     const pageElement = bookElement.querySelector('[data-page-number="' + pageNumber + '"]');
-    if (!pageElement) return;
+    if (!pageElement) return Promise.resolve();
 
-    const pdfPage = await pdfDocument.getPage(pageNumber);
-    if (token !== loadToken) return;
-    const baseViewport = pdfPage.getViewport({ scale: 1 });
-    const scale = Math.min(520 / baseViewport.width, 720 / baseViewport.height);
-    const viewport = pdfPage.getViewport({ scale: scale * Math.min(window.devicePixelRatio || 1, 1.5) });
-    const canvas = pageElement.querySelector("canvas");
-    const context = canvas.getContext("2d", { alpha: false });
-    canvas.width = Math.ceil(viewport.width);
-    canvas.height = Math.ceil(viewport.height);
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    const renderTask = pdfPage.render({ canvasContext: context, viewport: viewport, background: "#fffefa" });
-    renderedPages.set(pageNumber, renderTask.promise);
-    try {
+    const renderPromise = (async function () {
+      const pdfPage = await pdfDocument.getPage(pageNumber);
+      if (token !== loadToken) return;
+      const baseViewport = pdfPage.getViewport({ scale: 1 });
+      const scale = Math.min(520 / baseViewport.width, 720 / baseViewport.height);
+      const viewport = pdfPage.getViewport({ scale: scale * Math.min(window.devicePixelRatio || 1, 1.5) });
+      const canvas = pageElement.querySelector("canvas");
+      const context = canvas.getContext("2d", { alpha: false });
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      const renderTask = pdfPage.render({ canvasContext: context, viewport: viewport, background: "#fffefa" });
       await renderTask.promise;
-    } catch (error) {
-      renderedPages.delete(pageNumber);
-      if (token === loadToken) throw error;
-    }
+      if (token === loadToken) {
+        failedPages.delete(pageNumber);
+        if (failedPages.size === 0 && errorElement.textContent === renderErrorMessage) {
+          errorElement.hidden = true;
+        }
+      }
+    })();
+    renderedPages.set(pageNumber, renderPromise);
+    return renderPromise.catch(function (error) {
+      if (renderedPages.get(pageNumber) === renderPromise) renderedPages.delete(pageNumber);
+      throw error;
+    });
   }
 
   function renderNearCurrentPage() {
     if (!pageFlip || !pdfDocument) return;
     const firstPage = pageFlip.getCurrentPageIndex() + 1;
     const pageCount = pdfDocument.numPages;
+    const token = loadToken;
     const pagesToRender = new Set([firstPage - 1, firstPage, firstPage + 1, firstPage + 2, firstPage + 3]);
     pagesToRender.forEach(function (pageNumber) {
       if (pageNumber >= 1 && pageNumber <= pageCount) {
-        renderPage(pageNumber, loadToken).catch(function () {
-          setError("No se pudo procesar una página de esta edición. Puedes abrir el PDF original desde el enlace de descarga.");
+        renderPage(pageNumber, token).catch(function () {
+          if (token === loadToken) {
+            failedPages.add(pageNumber);
+            setError(renderErrorMessage);
+          }
         });
       }
     });
@@ -111,6 +125,7 @@
     currentEdition = editionKey;
     const token = ++loadToken;
     renderedPages = new Map();
+    failedPages = new Set();
     errorElement.hidden = true;
     loadingElement.hidden = false;
     loadingElement.textContent = "Preparando la edición…";
