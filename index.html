@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff8f4">
+  <meta name="description" content="Boletín Informativo Profesional de la Coordinación de Relaciones Educativas de Villa Mercedes.">
+  <title>Boletín Informativo Profesional | Villa Mercedes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #fff8f4;
+      --white: #fffefa;
+      --ink: #142c4b;
+      --muted: #657080;
+      --orange: #ef6c00;
+      --pale-orange: #fff0e5;
+      --line: #efd9ce;
+      --serif: "DM Serif Display", Georgia, serif;
+      --sans: "DM Sans", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 92% 5%, rgba(239, 108, 0, .1), transparent 25rem),
+        repeating-linear-gradient(0deg, transparent 0 39px, rgba(20, 44, 75, .025) 39px 40px),
+        var(--paper);
+      font-family: var(--sans);
+    }
+
+    a { color: inherit; }
+    .page-shell { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 76px;
+      border-bottom: 1px solid var(--line);
+    }
+    .wordmark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-decoration: none;
+    }
+    .mark {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--orange);
+      color: var(--pale-orange);
+      font-family: var(--serif);
+      font-size: 17px;
+    }
+    .topbar nav { display: flex; gap: 26px; }
+    .topbar nav a {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .topbar nav a:hover, .topbar nav a:focus-visible { color: var(--orange); }
+
+    main { padding: 68px 0 84px; }
+    .intro { max-width: 700px; margin-bottom: 48px; }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 17px;
+      color: var(--orange);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { width: 24px; height: 2px; background: var(--orange); content: ""; }
+    h1, h2, p { margin-top: 0; }
+    h1 {
+      max-width: 650px;
+      margin-bottom: 16px;
+      font-family: var(--serif);
+      font-size: clamp(42px, 6vw, 68px);
+      font-weight: 400;
+      line-height: 1.03;
+    }
+    .intro-copy { max-width: 520px; margin-bottom: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+    .edition-list { display: grid; gap: 38px; }
+    .edition {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--white);
+      box-shadow: 0 14px 38px rgba(23, 38, 34, .055);
+      scroll-margin-top: 24px;
+    }
+    .edition-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 88px;
+      padding: 20px 26px;
+      border-bottom: 1px solid var(--line);
+    }
+    .edition-title-group { display: flex; align-items: baseline; gap: 14px; }
+    .edition-number { color: var(--orange); font-size: 11px; font-weight: 700; }
+    h2 { margin: 0; font-family: var(--serif); font-size: 25px; font-weight: 400; }
+    .open-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background-color .18s ease, border-color .18s ease;
+    }
+    .open-link:hover, .open-link:focus-visible { border-color: var(--orange); background: #fff0e5; }
+    .open-link span { font-size: 15px; line-height: 1; }
+    .reader-frame { display: block; width: 100%; height: 680px; border: 0; background: #e8e9e3; }
+    footer { padding: 22px 0 30px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+    footer .page-shell { display: flex; justify-content: space-between; gap: 16px; }
+
+    @media (max-width: 620px) {
+      .page-shell { width: min(100% - 32px, 1120px); }
+      .topbar { min-height: 66px; }
+      .topbar nav { gap: 14px; }
+      .topbar nav a { font-size: 11px; }
+      main { padding: 48px 0 58px; }
+      .intro { margin-bottom: 34px; }
+      .intro-copy { font-size: 14px; }
+      .edition-list { gap: 24px; }
+      .edition-heading { align-items: flex-start; min-height: 0; padding: 17px 16px; }
+      .edition-title-group { align-items: flex-start; flex-direction: column; gap: 5px; }
+      h2 { font-size: 22px; }
+      .open-link { gap: 5px; padding: 9px 10px; font-size: 11px; }
+      .reader-frame { height: min(72vh, 640px); min-height: 440px; }
+      footer .page-shell { flex-direction: column; gap: 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+  <link rel="stylesheet" href="./site.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <a class="brand-logo-link" href="#inicio" aria-label="Boletín Informativo Profesional, inicio">
+        <img class="brand-logo brand-logo-coordination" src="./logos/logo.re.header.png" alt="Coordinación de Relaciones Educativas">
+      </a>
+      <a class="brand-logo-link" href="https://www.instagram.com/muni_vm/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de la Municipalidad de Villa Mercedes">
+        <img class="brand-logo brand-logo-municipality" src="./logos/logo.municipalidad.header.png" alt="Municipalidad de Villa Mercedes">
+      </a>
+    </div>
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a href="#quienes-somos">Quiénes somos</a>
+      <a href="#archivo">Ediciones</a>
+      <a href="#envios">Envíos</a>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <section class="hero page-shell" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Coordinación de Relaciones Educativas</p>
+        <h1 id="page-title">Boletín Informativo <span>Profesional</span></h1>
+        <p>Un espacio para compartir las ediciones del Boletín y acercar las voces de las y los profesionales a la comunidad de Villa Mercedes.</p>
+        <a class="text-link" href="#archivo">Explorar las ediciones <span aria-hidden="true">↓</span></a>
+      </div>
+    </section>
+
+    <section class="about-section" id="quienes-somos" aria-labelledby="about-title">
+      <div class="page-shell about-layout">
+        <div class="about-copy">
+          <h2 id="about-title">¿Quiénes somos?</h2>
+          <p>Somos un equipo de más de 15 profesionales de la Coordinación de Relaciones Educativas de la Municipalidad de Villa Mercedes. Trabajamos para fortalecer las trayectorias profesionales de la ciudad e impulsamos iniciativas como Expo al Futuro, Impulsar Trabajo y Punto Joven.</p>
+          <p>El Boletín Informativo Profesional, pensado por y para profesionales de la ciudad, reúne dossiers temáticos, eventos académicos, capacitaciones, entrevistas, empleabilidad, reseñas, lenguas y culturas, voces y debates. Aquí puedes leer sus ediciones completas desde distintos dispositivos.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="archive-section page-shell" id="archivo" aria-labelledby="archive-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="archive-title">Todas las ediciones</h2>
+        </div>
+        <a class="download-link" id="pdf-download" href="./boletines/boletin_septiembre.pdf" download>Descargar PDF <span aria-hidden="true">↓</span></a>
+      </div>
+
+      <div class="edition-tabs" role="group" aria-label="Elegir edición">
+        <button class="edition-tab" type="button" data-edition="septiembre" aria-pressed="true">Septiembre</button>
+        <button class="edition-tab" type="button" data-edition="agosto" aria-pressed="false">Agosto</button>
+        <button class="edition-tab" type="button" data-edition="julio" aria-pressed="false">Julio</button>
+        <button class="edition-tab" type="button" data-edition="junio" aria-pressed="false">Junio</button>
+        <button class="edition-tab" type="button" data-edition="mayo" aria-pressed="false">Mayo</button>
+        <button class="edition-tab" type="button" data-edition="abril" aria-pressed="false">Abril</button>
+      </div>
+
+      <div class="reader-heading">
+        <div><p class="reader-kicker">BOLETÍN INFORMATIVO PROFESIONAL</p><h3 id="edition-title">Septiembre</h3></div>
+        <span class="page-count" id="page-count" aria-live="polite">Cargando edición…</span>
+      </div>
+
+      <div class="reader-shell">
+        <div class="book-stage" id="book-stage">
+          <div class="book-loading" id="book-loading" role="status">Preparando la edición…</div>
+          <div class="book" id="book" aria-label="Revista digital"></div>
+        </div>
+        <div class="reader-controls" aria-label="Controles del lector">
+          <button class="page-control" id="previous-page" type="button" aria-label="Página anterior" title="Página anterior" disabled><span aria-hidden="true">←</span></button>
+          <span class="reader-hint">Desliza o usa las flechas</span>
+          <button class="page-control" id="next-page" type="button" aria-label="Página siguiente" title="Página siguiente" disabled><span aria-hidden="true">→</span></button>
+        </div>
+        <p class="reader-error" id="reader-error" role="alert" hidden></p>
+      </div>
+    </section>
+
+    <section class="submit-section" id="envios" aria-labelledby="submit-title">
+      <div class="page-shell submit-layout">
+        <div><h2 id="submit-title">¿Tienes una propuesta para compartir?</h2></div>
+        <a class="submit-link" href="https://forms.gle/xRJg21VywpWMsDmo8" target="_blank" rel="noopener noreferrer">Enviar una propuesta <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <a class="floating-brand" href="https://www.instagram.com/relaciones.educativas_muni/" target="_blank" rel="noopener noreferrer" aria-label="Visitar Instagram de Relaciones Educativas">
+    <img class="floating-logo" src="./logos/logo.re.header.png" alt="">
+  </a>
+
+  <footer class="site-footer"><div class="page-shell"><span>Coordinación de Relaciones Educativas</span><span>Municipalidad de Villa Mercedes</span></div></footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js" crossorigin="anonymous"></script>
+  <script src="./site.js"></script>
+</body>
+</html>
