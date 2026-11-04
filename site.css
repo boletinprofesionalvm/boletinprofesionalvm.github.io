@@ -135,8 +135,18 @@ body {
   visibility: hidden;
 }
 .book.is-ready { visibility: visible; }
-.book-page { overflow: hidden; background: #fffefa; }
+.book-page { position: relative; overflow: hidden; background: #fffefa; }
 .book-page canvas { display: block; width: 100%; height: 100%; object-fit: fill; }
+.page-link-layer { position: absolute; inset: 0; pointer-events: none; }
+.page-link {
+  position: absolute;
+  display: block;
+  pointer-events: auto;
+  color: transparent;
+  text-decoration: none;
+}
+.page-link:hover { background: rgba(239, 108, 0, .08); }
+.page-link:focus-visible { outline: 2px solid #ef6c00; outline-offset: -2px; }
 .book-loading { position: absolute; z-index: 1; display: grid; min-height: 120px; place-items: center; color: var(--red-deep); font-size: 13px; }
 .book-loading[hidden] { display: none; }
 .reader-controls { display: flex; align-items: center; justify-content: center; gap: 20px; min-height: 54px; }

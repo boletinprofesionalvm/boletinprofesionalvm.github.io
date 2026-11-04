@@ -45,7 +45,7 @@
     for (let pageNumber = 1; pageNumber <= pageTotal; pageNumber += 1) {
       const page = document.createElement("div");
       page.className = "book-page";
-      page.setAttribute("role", "img");
+      page.setAttribute("role", "group");
       page.setAttribute("aria-label", "Página " + pageNumber);
       page.dataset.pageNumber = String(pageNumber);
       const canvas = document.createElement("canvas");
@@ -61,9 +61,10 @@
     if (renderedPages.has(pageNumber)) return renderedPages.get(pageNumber);
     const pageElement = bookElement.querySelector('[data-page-number="' + pageNumber + '"]');
     if (!pageElement) return Promise.resolve();
+    const pdfDocumentSnapshot = pdfDocument;
 
     const renderPromise = (async function () {
-      const pdfPage = await pdfDocument.getPage(pageNumber);
+      const pdfPage = await pdfDocumentSnapshot.getPage(pageNumber);
       if (token !== loadToken) return;
       const baseViewport = pdfPage.getViewport({ scale: 1 });
       const scale = Math.min(520 / baseViewport.width, 720 / baseViewport.height);
@@ -76,11 +77,82 @@
       canvas.style.height = "100%";
       const renderTask = pdfPage.render({ canvasContext: context, viewport: viewport, background: "#fffefa" });
       await renderTask.promise;
-      if (token === loadToken) {
-        failedPages.delete(pageNumber);
-        if (failedPages.size === 0 && errorElement.textContent === renderErrorMessage) {
-          errorElement.hidden = true;
+      if (token !== loadToken) return;
+
+      const annotations = await pdfPage.getAnnotations();
+      const linkLayer = document.createElement("div");
+      linkLayer.className = "page-link-layer";
+      linkLayer.setAttribute("aria-label", "Enlaces de la página " + pageNumber);
+      const linkFragment = document.createDocumentFragment();
+
+      for (const annotation of annotations) {
+        if (annotation.subtype !== "Link" || !Array.isArray(annotation.rect)) continue;
+        const bounds = viewport.convertToViewportRectangle(annotation.rect);
+        const left = Math.max(0, Math.min(bounds[0], bounds[2]));
+        const top = Math.max(0, Math.min(bounds[1], bounds[3]));
+        const right = Math.min(viewport.width, Math.max(bounds[0], bounds[2]));
+        const bottom = Math.min(viewport.height, Math.max(bounds[1], bounds[3]));
+        if (right <= left || bottom <= top) continue;
+
+        let href;
+        let targetPage;
+        if (annotation.url) {
+          const url = new URL(annotation.url, window.location.href);
+          if (!["http:", "https:", "mailto:", "tel:"].includes(url.protocol)) continue;
+          href = url.href;
+        } else if (annotation.dest) {
+          const destination = typeof annotation.dest === "string"
+            ? await pdfDocumentSnapshot.getDestination(annotation.dest)
+            : annotation.dest;
+          if (token !== loadToken || !Array.isArray(destination) || destination.length === 0) continue;
+          const destinationPage = destination[0];
+          const pageIndex = Number.isInteger(destinationPage)
+            ? destinationPage
+            : await pdfDocumentSnapshot.getPageIndex(destinationPage);
+          if (pageIndex < 0 || pageIndex >= pdfDocumentSnapshot.numPages) continue;
+          targetPage = pageIndex + 1;
+          href = "#page-" + targetPage;
+        } else {
+          continue;
         }
+
+        const link = document.createElement("a");
+        link.className = "page-link";
+        link.href = href;
+        link.style.left = (left / viewport.width * 100) + "%";
+        link.style.top = (top / viewport.height * 100) + "%";
+        link.style.width = ((right - left) / viewport.width * 100) + "%";
+        link.style.height = ((bottom - top) / viewport.height * 100) + "%";
+        link.setAttribute("aria-label", annotation.title || (targetPage
+          ? "Ir a la página " + targetPage
+          : "Abrir enlace"));
+        if (targetPage) {
+          link.addEventListener("click", function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (pageFlip) pageFlip.flip(targetPage - 1);
+          });
+        } else {
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+        }
+        ["pointerdown", "mousedown", "touchstart"].forEach(function (eventName) {
+          link.addEventListener(eventName, function (event) {
+            event.stopPropagation();
+          });
+        });
+        link.addEventListener("click", function (event) {
+          event.stopPropagation();
+        });
+        linkFragment.append(link);
+      }
+      if (token !== loadToken) return;
+      linkLayer.append(linkFragment);
+      pageElement.replaceChildren(canvas, linkLayer);
+
+      failedPages.delete(pageNumber);
+      if (failedPages.size === 0 && errorElement.textContent === renderErrorMessage) {
+        errorElement.hidden = true;
       }
     })();
     renderedPages.set(pageNumber, renderPromise);
