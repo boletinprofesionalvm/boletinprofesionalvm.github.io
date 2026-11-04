@@ -2,6 +2,7 @@
   "use strict";
 
   const editions = {
+    octubre: { title: "Octubre", file: "boletin_octubre.pdf" },
     septiembre: { title: "Septiembre", file: "boletin_septiembre.pdf" },
     agosto: { title: "Agosto", file: "boletin_agosto.pdf" },
     julio: { title: "Julio", file: "boletin_julio.pdf" },
@@ -25,7 +26,7 @@
   let pdfDocument;
   let renderedPages = new Map();
   let failedPages = new Set();
-  let currentEdition = "septiembre";
+  let currentEdition = "octubre";
   let loadToken = 0;
   const renderErrorMessage = "No se pudo procesar una página de esta edición. Puedes abrir el PDF original desde el enlace de descarga.";
 
